@@ -1,13 +1,13 @@
 import { WHITELIST_TOKENS } from './../utils/pricing'
 /* eslint-disable prefer-const */
-import { FACTORY_ADDRESS, ZERO_BI, ONE_BI, ZERO_BD, ADDRESS_ZERO, pools_list} from './../utils/constants'
+import { FACTORY_ADDRESS, ZERO_BI, ONE_BI, ZERO_BD, ADDRESS_ZERO, pools_list } from './../utils/constants'
 import { Factory } from '../types/schema'
 import { Pool as PoolEvent } from '../types/Factory/Factory'
 import { DefaultCommunityFee } from '../types/Factory/Factory'
 import { Pool, Token, Bundle } from '../types/schema'
-import { Pool as PoolTemplate} from '../types/templates'
+import { Pool as PoolTemplate } from '../types/templates'
 import { fetchTokenSymbol, fetchTokenName, fetchTokenTotalSupply, fetchTokenDecimals } from '../utils/token'
-import { log,BigInt } from '@graphprotocol/graph-ts'
+import { log, BigInt } from '@graphprotocol/graph-ts'
 
 export function handlePoolCreated(event: PoolEvent): void {
   // temp fix
@@ -28,6 +28,7 @@ export function handlePoolCreated(event: PoolEvent): void {
     factory.totalValueLockedMaticUntracked = ZERO_BD
     factory.txCount = ZERO_BI
     factory.owner = ADDRESS_ZERO
+    factory.defaultCommunityFee = BigInt.fromI32(0)
 
     // create new bundle for tracking matic price
     let bundle = new Bundle('1')
@@ -38,7 +39,7 @@ export function handlePoolCreated(event: PoolEvent): void {
   factory.poolCount = factory.poolCount.plus(ONE_BI)
 
   let pool = new Pool(event.params.pool.toHexString()) as Pool
-  
+
   let token0_address = event.params.token0
   let token1_address = event.params.token1
 
@@ -46,12 +47,12 @@ export function handlePoolCreated(event: PoolEvent): void {
   let token1 = Token.load(token1_address.toHexString())
 
 
-  if(pools_list.includes(event.params.pool.toHexString())){
+  if (pools_list.includes(event.params.pool.toHexString())) {
     token0 = Token.load(event.params.token1.toHexString())
     token1 = Token.load(event.params.token0.toHexString())
     token0_address = event.params.token1
-    token1_address = event.params.token0  
-  }  
+    token1_address = event.params.token0
+  }
 
   // fetch info if null
   if (token0 === null) {
@@ -147,7 +148,8 @@ export function handlePoolCreated(event: PoolEvent): void {
   pool.feesToken0 = ZERO_BD
   pool.feesToken1 = ZERO_BD
   pool.untrackedVolumeUSD = ZERO_BD
-
+  pool.tick = ZERO_BI
+  pool.untrackedFeesUSD = ZERO_BD
   pool.collectedFeesToken0 = ZERO_BD
   pool.collectedFeesToken1 = ZERO_BD
   pool.collectedFeesUSD = ZERO_BD
@@ -161,7 +163,7 @@ export function handlePoolCreated(event: PoolEvent): void {
 
 }
 
-export function handleDefaultCommFeeChange(event: DefaultCommunityFee): void{
+export function handleDefaultCommFeeChange(event: DefaultCommunityFee): void {
   let factory = Factory.load(FACTORY_ADDRESS)
   if (factory == null) {
     factory = new Factory(FACTORY_ADDRESS)

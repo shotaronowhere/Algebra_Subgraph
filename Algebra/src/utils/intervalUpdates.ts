@@ -70,6 +70,8 @@ export function updatePoolDayData(event: ethereum.Event): PoolDayData {
     poolDayData.high = pool.token0Price
     poolDayData.low = pool.token0Price
     poolDayData.close = pool.token0Price
+    poolDayData.feesToken0 = pool.collectedFeesToken0
+    poolDayData.feesToken1 = pool.collectedFeesToken1
   }
 
   if (pool.token0Price.gt(poolDayData.high)) {
@@ -93,34 +95,34 @@ export function updatePoolDayData(event: ethereum.Event): PoolDayData {
   return poolDayData as PoolDayData
 }
 
-export function updateFeeHourData(event: ethereum.Event, Fee: BigInt): void{
+export function updateFeeHourData(event: ethereum.Event, Fee: BigInt): void {
   let timestamp = event.block.timestamp.toI32()
-  let hourIndex = timestamp / 3600 
+  let hourIndex = timestamp / 3600
   let hourStartUnix = hourIndex * 3600
   let hourFeeID = event.address
     .toHexString()
     .concat('-')
     .concat(hourIndex.toString())
   let FeeHourDataEntity = FeeHourData.load(hourFeeID)
-  if(FeeHourDataEntity){
+  if (FeeHourDataEntity) {
     FeeHourDataEntity.timestamp = BigInt.fromI32(hourStartUnix)
     FeeHourDataEntity.fee += Fee
     FeeHourDataEntity.changesCount += ONE_BI
-    if(FeeHourDataEntity.maxFee < Fee) FeeHourDataEntity.maxFee = Fee
-    if(FeeHourDataEntity.minFee > Fee) FeeHourDataEntity.minFee = Fee  
+    if (FeeHourDataEntity.maxFee < Fee) FeeHourDataEntity.maxFee = Fee
+    if (FeeHourDataEntity.minFee > Fee) FeeHourDataEntity.minFee = Fee
     FeeHourDataEntity.endFee = Fee
   }
-  else{
+  else {
     FeeHourDataEntity = new FeeHourData(hourFeeID)
     FeeHourDataEntity.timestamp = BigInt.fromI32(hourStartUnix)
     FeeHourDataEntity.fee = Fee
     FeeHourDataEntity.changesCount = ONE_BI
     FeeHourDataEntity.pool = event.address.toHexString()
-    if(Fee != ZERO_BI){
+    if (Fee != ZERO_BI) {
       FeeHourDataEntity.startFee = Fee
       FeeHourDataEntity.endFee = Fee
-      FeeHourDataEntity.maxFee = Fee 
-      FeeHourDataEntity.minFee = Fee 
+      FeeHourDataEntity.maxFee = Fee
+      FeeHourDataEntity.minFee = Fee
     }
 
   }
