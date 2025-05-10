@@ -1,3 +1,3 @@
 import { Address } from '@graphprotocol/graph-ts';
 
-export const FarmingCenterAddress = Address.fromString("0xa2Adf5EF43226a4a6A7c6b360F486bDaf2712Bc8")
+export const FarmingCenterAddress = Address.fromString("0xDe51dDF1aE7d5BBD7bF1A0e40aAA1F6C12579106")

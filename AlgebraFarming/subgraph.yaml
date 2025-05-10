@@ -1,18 +1,19 @@
-specVersion: 0.0.2
-description: Algebra is a Innovative DEX with concentrated liquidity, adaptive fee, build-in farming etc.
+specVersion: 0.0.4
+description: Algebra is a Innovative DEX with concentrated liquidity, adaptive
+  fee, build-in farming etc.
 schema:
   file: ./schema.graphql
 dataSources:
-- kind: ethereum/contract
-  name: NonfungiblePositionManager
-  network: arbitrum-one
-  source:
-      address: '0xCB0347cc2c07f827Fdd49eD86Ee867A754b647DC'
+  - kind: ethereum/contract
+    name: NonfungiblePositionManager
+    network: gnosis
+    source:
+      address: "0x91fD594c46D8B01E62dBDeBed2401dde01817834"
       abi: NonfungiblePositionManager
-      startBlock: 60555368
-  mapping:
+      startBlock: 30096660
+    mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       file: ./src/mappings/position-manager.ts
       entities:
@@ -28,22 +29,23 @@ dataSources:
         - name: ERC20NameBytes
           file: ./abis/ERC20NameBytes.json
       eventHandlers:
-        - event: IncreaseLiquidity(indexed uint256,uint128,uint128,uint256,uint256,address)
+        - event: IncreaseLiquidity(indexed
+            uint256,uint128,uint128,uint256,uint256,address)
           handler: handleIncreaseLiquidity
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
         - event: DecreaseLiquidity(indexed uint256,uint128,uint256,uint256)
           handler: handleDecreaseLiquidity
-- kind: ethereum/contract
-  name: EternalFarming
-  network: arbitrum-one
-  source:
-      address: '0x40F5AF7171b35963DBA9Cd9952d3f11F5e32Dd30'
+  - kind: ethereum/contract
+    name: EternalFarming
+    network: gnosis
+    source:
+      address: "0x607BbfD4CEbd869AaD04331F8a2AD0C3C396674b"
       abi: EternalFarming
-      startBlock: 60555368
-  mapping:
+      startBlock: 30096668
+    mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       file: ./src/mappings/eternalFarming.ts
       entities:
@@ -61,15 +63,18 @@ dataSources:
         - name: ERC20NameBytes
           file: ./abis/ERC20NameBytes.json
       eventHandlers:
-        - event: EternalFarmingCreated(indexed address,indexed address,indexed address,address,uint256,uint256,uint256,uint256,(uint256,uint256,uint256,uint32,uint32,uint32),address,uint24)
+        - event: EternalFarmingCreated(indexed address,indexed address,indexed
+            address,address,uint256,uint256,uint256,uint256,(uint256,uint256,uint256,uint32,uint32,uint32),address,uint24)
           handler: handleIncentiveCreated
         - event: RewardClaimed(indexed address,uint256,indexed address,indexed address)
           handler: handleRewardClaimed
         - event: FarmEntered(indexed uint256,indexed bytes32,uint128,uint256)
           handler: handleTokenStaked
-        - event: FarmEnded(indexed uint256,indexed bytes32,indexed address,address,address,uint256,uint256)
+        - event: FarmEnded(indexed uint256,indexed bytes32,indexed
+            address,address,address,uint256,uint256)
           handler: handleTokenUnstaked
-        - event: IncentiveDeactivated(indexed address,indexed address,indexed address,address,uint256,uint256)
+        - event: IncentiveDeactivated(indexed address,indexed address,indexed
+            address,address,uint256,uint256)
           handler: handleDeactivate
         - event: RewardsRatesChanged(uint128,uint128,bytes32)
           handler: handleRewardsRatesChanged
@@ -79,16 +84,16 @@ dataSources:
           handler: handleRewardAmountsDecreased
         - event: RewardsCollected(uint256,bytes32,uint256,uint256)
           handler: handleCollect
-- kind: ethereum/contract
-  name: FarmingCenter
-  network: arbitrum-one
-  source:
-      address: '0xa2Adf5EF43226a4a6A7c6b360F486bDaf2712Bc8'
+  - kind: ethereum/contract
+    name: FarmingCenter
+    network: gnosis
+    source:
       abi: FarmingCenter
-      startBlock: 60555368
-  mapping:
+      address: "0xDe51dDF1aE7d5BBD7bF1A0e40aAA1F6C12579106"
+      startBlock: 30096672
+    mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       file: ./src/mappings/center.ts
       entities:
@@ -106,17 +111,17 @@ dataSources:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
-- kind: ethereum/contract
-  name: LimitFarming
-  network: arbitrum-one
-  source:
-      address: '0x67Db143dcfeEB9b1BfE7fdA64bb7b23c844Bc2Aa'
+  - kind: ethereum/contract
+    name: LimitFarming
+    network: gnosis
+    source:
+      address: "0xA01e2785d2D04cC0a09Bde9C3eA49Bf0aD7811F2"
       abi: LimitFarming
-      startBlock: 60555368 
-  mapping:
+      startBlock: 30096667
+    mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript 
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
       file: ./src/mappings/limitFarming.ts
       entities:
         - Deposit
@@ -133,15 +138,18 @@ dataSources:
         - name: ERC20NameBytes
           file: ./abis/ERC20NameBytes.json
       eventHandlers:
-        - event: LimitFarmingCreated(indexed address,indexed address,indexed address,uint256,uint256,uint256,uint256,(uint256,uint256,uint256,uint32,uint32,uint32),address,uint24,uint32)
+        - event: LimitFarmingCreated(indexed address,indexed address,indexed
+            address,uint256,uint256,uint256,uint256,(uint256,uint256,uint256,uint32,uint32,uint32),address,uint24,uint32)
           handler: handleIncentiveCreated
         - event: RewardClaimed(indexed address,uint256,indexed address,indexed address)
           handler: handleRewardClaimed
         - event: FarmEntered(indexed uint256,indexed bytes32,uint128,uint256)
           handler: handleTokenStaked
-        - event: FarmEnded(indexed uint256,indexed bytes32,indexed address,address,address,uint256,uint256)
+        - event: FarmEnded(indexed uint256,indexed bytes32,indexed
+            address,address,address,uint256,uint256)
           handler: handleTokenUnstaked
-        - event: IncentiveDeactivated(indexed address,indexed address,indexed address,address,uint256,uint256)
+        - event: IncentiveDeactivated(indexed address,indexed address,indexed
+            address,address,uint256,uint256)
           handler: handleDeactivate
         - event: RewardsAdded(uint256,uint256,bytes32)
           handler: handleRewardsAdded
